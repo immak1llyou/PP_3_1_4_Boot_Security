@@ -5,8 +5,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.kata.spring.boot_security.demo.dao.RoleDao;
-import ru.kata.spring.boot_security.demo.dao.UserDao;
+import ru.kata.spring.boot_security.demo.dao.RoleRepository;
+import ru.kata.spring.boot_security.demo.dao.UserRepository;
 import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.security.UserDetailsImpl;
 
@@ -16,17 +16,17 @@ import java.util.Optional;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private final UserDao userDao;
+    private final UserRepository userRepository;
 
     @Autowired
-    public UserServiceImpl(UserDao userDao, RoleDao roleDao) {
-        this.userDao = userDao;
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository) {
+        this.userRepository = userRepository;
     }
 
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> findUser = userDao.findByUserName(username);
+        Optional<User> findUser = userRepository.findByUserName(username);
         if (findUser.isEmpty()) {
             throw new UsernameNotFoundException(username);
         }
@@ -36,37 +36,37 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public User getUserByUserName(String userName) {
-        if (userDao.findByUserName(userName).isEmpty()) {
+        if (userRepository.findByUserName(userName).isEmpty()) {
             throw new UsernameNotFoundException(String.format("Пользователь с именем '%s' не найден в базе данных."
                     , userName));
         }
-        return userDao.findByUserName(userName).get();
+        return userRepository.findByUserName(userName).get();
     }
 
     @Override
     @Transactional
     public void deleteUserByUserName(String userName) {
-        Optional<User> findUser = userDao.findByUserName(userName);
+        Optional<User> findUser = userRepository.findByUserName(userName);
         if (findUser.isPresent()) {
             User user = findUser.get();
-            userDao.delete(user);
+            userRepository.delete(user);
         }
     }
 
     @Override
     @Transactional
     public void saveUser(User user) {
-        if (userDao.findByUserName(user.getUserName()).isPresent()) {
+        if (userRepository.findByUserName(user.getUserName()).isPresent()) {
             throw new UsernameNotFoundException(String.format("Пользователь '%s' уже существует." +
                     " Сохранение невозможно.", user.getUserName()));
         }
-        userDao.save(user);
+        userRepository.save(user);
     }
 
     @Override
     @Transactional
     public void updateUser(User updateUser, int id) {
-        User existingUser = userDao.findById(updateUser.getId())
+        User existingUser = userRepository.findById(updateUser.getId())
                 .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
         existingUser.getRole().clear();
         existingUser.setRole(updateUser.getRole());
@@ -78,6 +78,6 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public List<User> getAllUsers() {
-        return userDao.findAll();
+        return userRepository.findAll();
     }
 }

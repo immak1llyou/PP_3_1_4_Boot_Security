@@ -1,10 +1,7 @@
 package ru.kata.spring.boot_security.demo.models;
 
 import javax.persistence.*;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.util.List;
 
 @Entity
@@ -16,9 +13,24 @@ public class User {
     private int id;
 
     @NotEmpty
-    @Size(min = 2, max = 100, message = "Имя должно быть от 2 до 100 символов длинной")
-    @Column(name = "username")
+    @Size(min = 2, max = 100, message = "Никнейм должен быть от 2 до 100 символов длинной")
+    @Column(name = "username", unique = true)
     private String userName;
+
+    @NotEmpty
+    @Size(min = 2, max = 100, message = "Имя должно быть от 2 до 100 символов длинной")
+    @Column(name = "name")
+    private String name;
+
+    @NotEmpty
+    @Size(min = 2, max = 100, message = "Фамилия должна быть от 2 до 100 символов длинной")
+    @Column(name = "surname")
+    private String surname;
+
+    @NotEmpty
+    @Email
+    @Column(name = "email", unique = true)
+    private String email;
 
     @Column(name = "password")
     private String password;
@@ -37,11 +49,14 @@ public class User {
     public User() {
     }
 
-    public User(String userName, int yearOfBirth, List<Role> role, String password) {
+    public User(String userName, int yearOfBirth, List<Role> role, String password, String name, String surname, String email) {
         this.userName = userName;
         this.yearOfBirth = yearOfBirth;
         this.role = role;
         this.password = password;
+        this.name = name;
+        this.surname = surname;
+        this.email = email;
     }
 
     public int getId() {
@@ -82,6 +97,30 @@ public class User {
 
     public void setRole(List<Role> role) {
         this.role = role;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     @Override

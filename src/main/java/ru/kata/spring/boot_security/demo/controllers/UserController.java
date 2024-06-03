@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.services.UserService;
 
 @Controller
@@ -21,7 +22,9 @@ public class UserController {
 
     @GetMapping()
     public String showInfo(@RequestParam("userName") String userName, Model model) {
-        model.addAttribute("user", userService.getUserByUserName(userName));
+        model.addAttribute("users", userService.getAllUsers());
+        model.addAttribute("authUser", userService.getAuthUser());
+        model.addAttribute("userName", userService.getUserByUserName(userName));
         return "user/user";
     }
 }

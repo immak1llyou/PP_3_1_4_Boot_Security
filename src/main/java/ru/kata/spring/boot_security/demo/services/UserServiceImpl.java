@@ -1,15 +1,16 @@
 package ru.kata.spring.boot_security.demo.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.kata.spring.boot_security.demo.dao.RoleRepository;
-import ru.kata.spring.boot_security.demo.dao.UserRepository;
+import ru.kata.spring.boot_security.demo.repository.RoleRepository;
+import ru.kata.spring.boot_security.demo.repository.UserRepository;
 import ru.kata.spring.boot_security.demo.models.User;
-import ru.kata.spring.boot_security.demo.security.UserDetailsImpl;
 
+import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,20 +18,12 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
-    }
-
-    @Override
-    @Transactional
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> findUser = userRepository.findByUserName(username);
-        if (findUser.isEmpty()) {
-            throw new UsernameNotFoundException(username);
-        }
-        return new UserDetailsImpl(findUser.get());
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -60,6 +53,7 @@ public class UserServiceImpl implements UserService {
             throw new UsernameNotFoundException(String.format("Пользователь '%s' уже существует." +
                     " Сохранение невозможно.", user.getUserName()));
         }
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
     }
 
@@ -70,14 +64,25 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
         existingUser.getRole().clear();
         existingUser.setRole(updateUser.getRole());
-        existingUser.setPassword(updateUser.getPassword());
+        if (!existingUser.getPassword().equals(updateUser.getPassword())) {
+            existingUser.setPassword(passwordEncoder.encode(updateUser.getPassword()));
+        }
         existingUser.setYearOfBirth(updateUser.getYearOfBirth());
         existingUser.setUserName(updateUser.getUserName());
+        existingUser.setName(updateUser.getName());
+        existingUser.setSurname(updateUser.getSurname());
+        existingUser.setEmail(updateUser.getEmail());
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<User> getAllUsers() {
         return userRepository.findAll();
+    }
+
+    @Override
+    public User getAuthUser() {
+        Optional<User> user = userRepository.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
+        return user.orElse(null);
     }
 }

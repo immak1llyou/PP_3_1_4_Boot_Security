@@ -27,14 +27,11 @@ public class AdminController {
 
     @GetMapping()
     public String adminPanel(Model model) {
-        List<User> allUsers = userService.getAllUsers();
-        model.addAttribute("allUsers", allUsers);
+        model.addAttribute("allUsers", userService.getAllUsers());
         model.addAttribute("authUser", userService.getAuthUser());
         model.addAttribute("newUser", new User());
         model.addAttribute("roles", roleService.getRoles());
-        for (User user : allUsers) {
-            model.addAttribute(String.valueOf(user.getId()), user);
-        }
+        model.addAttribute("activeTable", "usersTable");
         return "admin/adminPanel";
     }
 

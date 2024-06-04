@@ -29,6 +29,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http
+                .csrf().disable()
                 .authenticationProvider(authenticationProvider())
                 .authorizeRequests()
                 .antMatchers("/admin/**").hasRole("ADMIN")
@@ -36,6 +37,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .formLogin()
                 .successHandler(userHandler)
+                .usernameParameter("email")
+                .loginPage("/login")
                 .and()
                 .logout()
                 .logoutUrl("/logout")

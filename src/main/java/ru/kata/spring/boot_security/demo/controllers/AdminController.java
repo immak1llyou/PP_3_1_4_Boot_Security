@@ -35,7 +35,6 @@ public class AdminController {
 
     @PostMapping("/update")
     public String updateUser(@ModelAttribute("updateUser") User updateUser, @RequestParam("id") int id) {
-        System.out.println("Пользователь из формы в Admin Controller'e: "+ updateUser);
         userService.updateUser(updateUser, id);
         return "redirect:/admin";
     }
@@ -44,14 +43,6 @@ public class AdminController {
     public String deleteUser(@RequestParam("userName") String userName) {
         userService.deleteUserByUserName(userName);
         return "redirect:/admin";
-    }
-
-    @GetMapping("/show")
-    public String showInfo(@RequestParam("userName") String userName, Model model) {
-        model.addAttribute("users", userService.getAllUsers());
-        model.addAttribute("authUser", userService.getAuthUser());
-        model.addAttribute("userName", userService.getUserByUserName(userName));
-        return "admin/show_user_info_page";
     }
 
     @PostMapping()

@@ -10,7 +10,6 @@
 </head>
 <body>
 
-
 <!--Верхняя строка, реализация имени пользователя и кнопки выходя-->
 <div class="container">
     <div class="p-3 m-4 bg-dark text-white">
@@ -39,38 +38,32 @@
 </div>
 <!-- Конец реализации верхней строки и кнопки выхода -->
 
-
 <div class="container">
     <div class="row w-100">
-
+        <!-- Реализация левой панели списка юзеров-->
         <div class="d-flex align-items-start">
-            <div class="nav flex-column nav-pills w-25 me-1" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                <!-- Начало кнопки для ADMIN панели-->
+            <div class="nav flex-column nav-pills w-25 me-1" id="v-pills-tab" role="tablist"
+                 aria-orientation="vertical">
                 <button class="nav-link active" id="v-pills-home-tab" data-bs-toggle="pill"
                         data-bs-target="#v-pills-home"
                         type="button" role="tab" aria-controls="v-pills-home" aria-selected="true"
                         th:text="${authUser.name}">
                 </button>
-                <!-- Конец кнопки для ADMIN панели-->
-
-                <!-- Начало кнопки для вывода информации о юзерах-->
                 <button class="nav-link" id="v-pills-profile-tab" data-bs-toggle="pill"
                         data-bs-target="#v-pills-profile"
                         type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false"
                         th:each="user : ${allUsers}" th:text="${user.getUserName()}"
                         th:unless="${user.name == authUser.name}">
                 </button>
-                <!-- Конец кнопки для вывода информации о юзерах-->
             </div>
 
-            <!-- Реализация информации внутри кнопки для ADMIN панели-->
-            <div class="tab-content" id="v-pills-tabContent">
-                <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel"
+            <!-- Реализация информации внутри кнопки ADMIN-->
+            <div class="tab-content w-100" id="v-pills-tabContent">
+                <div class="tab-pane fade show active w-100" id="v-pills-home" role="tabpanel"
                      aria-labelledby="v-pills-home-tab">
-                    <!-- Далее идёт внутрянка информации в табе-->
+
                     <div class="container">
                         <div class="row w-100">
-                            <!-- начало Admin страницы-->
                             <div class="col-4 w-100">
                                 <p class="h1">Admin panel</p>
                                 <nav>
@@ -94,13 +87,13 @@
                                         </button>
                                     </div>
                                 </nav>
-                                <div class="tab-content" id="nav-tabContent">
+                                <div class="tab-content w-100" id="nav-tabContent">
                                     <div class="tab-pane fade show active"
                                          id="nav-home" role="tabpanel"
                                          aria-labelledby="nav-home-tab">
                                         <!-- начало реализации окна с таблицей пользователей -->
                                         <div class="row">
-                                            <div class="card p-0 m-0">
+                                            <div class="card p-0 m-0 ">
                                                 <div class="card-header">
                                                     <p class="h5">
                                                         All users
@@ -156,78 +149,104 @@
                                                                                         aria-label="Close"></button>
                                                                             </div>
                                                                             <div class="modal-body">
-                                                                                <form th:method="POST"
+                                                                                <form th:method="PATCH"
                                                                                       th:action="@{/admin/update(id=${user.getId()})}"
                                                                                       th:object="${user}">
-                                                                                    <label for="username"
-                                                                                           class="form-label">Username</label>
-                                                                                    <input type="text"
-                                                                                           class="form-control"
-                                                                                           th:value="*{userName}"
-                                                                                           id="username"/>
-                                                                                    <br/>
-                                                                                    <label for="name"
-                                                                                           class="form-label">Name</label>
-                                                                                    <input type="text"
-                                                                                           class="form-control"
-                                                                                           th:value="*{name}"
-                                                                                           id="name"/>
-
-                                                                                    <br/>
-                                                                                    <label for="surname"
-                                                                                           class="form-label">Surname</label>
-                                                                                    <input type="text"
-                                                                                           class="form-control"
-                                                                                           th:value="*{surname}"
-                                                                                           id="surname"/>
-                                                                                    <br/>
-                                                                                    <label for="email"
-                                                                                           class="form-label">Email
-                                                                                        address</label>
-                                                                                    <input type="email"
-                                                                                           class="form-control"
-                                                                                           th:value="*{email}"
-                                                                                           id="email"/>
-                                                                                    <br/>
-                                                                                    <label for="password"
-                                                                                           class="form-label">Password</label>
-                                                                                    <input type="text"
-                                                                                           class="form-control"
-                                                                                           th:value="*{password}"
-                                                                                           id="password"/>
-                                                                                    <br/>
-                                                                                    <label for="YearOfBirth"
-                                                                                           class="form-label">Year
-                                                                                        of
-                                                                                        birth</label>
-                                                                                    <input type="text"
-                                                                                           class="form-control"
-                                                                                           id="YearOfBirth"
-                                                                                           th:value="*{yearOfBirth}"/>
-                                                                                    <br/>
-                                                                                    <div class="form-check form-check-inline"
-                                                                                         th:each="role : ${roles}">
-                                                                                        <input class="form-check-input"
-                                                                                               type="checkbox"
-                                                                                               id="inlineCheckbox1"
-                                                                                               th:value="*{role}"
-                                                                                               th:checked="${user.getRole().contains(role)}">
-                                                                                        <label class="form-check-label"
-                                                                                               for="inlineCheckbox1"
-                                                                                               th:text="${#strings.replace(role.getRoleName(), 'ROLE_', '')}">USER</label>
+                                                                                    <div class="modal-body">
+                                                                                        <div class="mb-3">
+                                                                                            <label for="idEdit"
+                                                                                                   class="col-form-label"><b>ID</b></label>
+                                                                                            <input type="text"
+                                                                                                   th:value="${user.getId()}"
+                                                                                                   name="id"
+                                                                                                   class="form-control"
+                                                                                                   id="idEdit"
+                                                                                                   style="box-shadow: none; border-color: gray; background-color: rgba(186,186,186,0.85);"
+                                                                                                   readonly/>
+                                                                                        </div>
+                                                                                        <div class="mb-3">
+                                                                                            <label for="nameUpdate"
+                                                                                                   class="col-form-label"><b>First
+                                                                                                name</b></label>
+                                                                                            <input type="text"
+                                                                                                   th:value="${user.getName}"
+                                                                                                   name="name"
+                                                                                                   class="form-control"
+                                                                                                   id="nameUpdate"
+                                                                                                   required
+                                                                                                   minlength="2"
+                                                                                                   maxlength="20"/>
+                                                                                        </div>
+                                                                                        <div class="mb-3">
+                                                                                            <label for="lastnameUpdate"
+                                                                                                   class="col-form-label"><b>Last
+                                                                                                name</b></label>
+                                                                                            <input type="text"
+                                                                                                   th:value="${user.getSurname()}"
+                                                                                                   name="lastname"
+                                                                                                   class="form-control"
+                                                                                                   id="lastnameUpdate"
+                                                                                                   required
+                                                                                                   minlength="2"
+                                                                                                   maxlength="20"/>
+                                                                                        </div>
+                                                                                        <div class="mb-3">
+                                                                                            <label for="YearOfBirthUpdate"
+                                                                                                   class="col-form-label"><b>Age</b></label>
+                                                                                            <input type="text"
+                                                                                                   th:value="${user.getYearOfBirth()}"
+                                                                                                   name="Year Of Birth"
+                                                                                                   class="form-control"
+                                                                                                   id="YearOfBirthUpdate"
+                                                                                                   required
+                                                                                                   minlength="2"
+                                                                                                   maxlength="20"/>
+                                                                                        </div>
+                                                                                        <div class="mb-3">
+                                                                                            <label for="emailUpdate"
+                                                                                                   class="col-form-label"><b>Email</b></label>
+                                                                                            <input type="text"
+                                                                                                   th:value="${user.getEmail()}"
+                                                                                                   name="email"
+                                                                                                   class="form-control"
+                                                                                                   id="emailUpdate"
+                                                                                                   required
+                                                                                                   minlength="2"
+                                                                                                   maxlength="20"/>
+                                                                                        </div>
+                                                                                        <div class="mb-3">
+                                                                                            <label for="passwordUpdate"
+                                                                                                   class="col-form-label"><b>Password</b></label>
+                                                                                            <input type="password"
+                                                                                                   th:value="${user.getPassword()}"
+                                                                                                   name="password"
+                                                                                                   class="form-control"
+                                                                                                   id="passwordUpdate"
+                                                                                                   required
+                                                                                                   minlength="2"
+                                                                                                   maxlength="20"/>
+                                                                                        </div>
+                                                                                        <div class="form-check form-check-inline"
+                                                                                             th:each="role : ${roles}">
+                                                                                            <input class="form-check-input"
+                                                                                                   type="checkbox"
+                                                                                                   id="Checkbox1"
+                                                                                                   th:value="${user.getRole()}"
+                                                                                                   th:checked="${user.getRole().contains(role)}">
+                                                                                            <label class="form-check-label"
+                                                                                                   for="Checkbox1"
+                                                                                                   th:text="${#strings.replace(role.getRoleName(), 'ROLE_', '')}">USER</label>
+                                                                                        </div>
                                                                                     </div>
-                                                                                    <br/>
                                                                                     <div class="modal-footer">
                                                                                         <button type="button"
                                                                                                 class="btn btn-secondary"
                                                                                                 data-bs-dismiss="modal">
                                                                                             Close
                                                                                         </button>
-                                                                                        <button type="submit"
-                                                                                                class="btn btn-primary">
-                                                                                            Save
-                                                                                            changes
-                                                                                        </button>
+                                                                                        <input type="submit"
+                                                                                               class="btn btn-primary"
+                                                                                               value="Edit"/>
                                                                                     </div>
                                                                                 </form>
                                                                             </div>
@@ -246,7 +265,7 @@
                                                                 </button>
                                                                 <!-- конец реализации кнопки редактирования -->
 
-                                                                <!-- Реализация модального окна редактирования пользователя -->
+                                                                <!-- Реализация модального окна удаления пользователя -->
                                                                 <div class="modal"
                                                                      th:id="${'deleteModal'+ user.getId()}"
                                                                      tabindex="-1">
@@ -362,7 +381,6 @@
                                         </div>
                                         <!-- конец реализации окна с таблицей пользователей -->
                                     </div>
-                                    <!-- начало реализации создания нового пользователя-->
 
                                     <!-- начало реализации создания нового пользователя-->
                                     <div class="tab-pane fade"
@@ -417,14 +435,13 @@
                                                                th:text="${#strings.replace(role.getRoleName(), 'ROLE_', '')}">USER</label>
                                                     </div>
                                                     <br/>
+                                                    <div class="position-absolute bottom-35 start-50 translate-middle-x">
+                                                        <button style="background-color: green" type="submit"
+                                                                class="btn btn-primary">
+                                                            Add new user
+                                                        </button>
+                                                    </div>
                                                 </form>
-                                                <br/>
-                                                <div class="position-absolute bottom-35 start-50 translate-middle-x">
-                                                    <button style="background-color: green" type="submit"
-                                                            class="btn btn-primary">
-                                                        Add new user
-                                                    </button>
-                                                </div>
                                                 <br/>
                                                 <br/>
                                             </div>
@@ -434,20 +451,45 @@
                                     <!-- конец реализации создания нового пользователя-->
                                 </div>
                             </div>
-                            <!-- конец Admin страницы-->
                         </div>
                     </div>
-                    <!-- НАЧАЛО -->
-                    <div class="tab-pane fade" id="v-pills-profile" role="tabpanel"
-                         aria-labelledby="v-pills-profile-tab">
-                        <!-- TODO Нужно как-то вставить таблицу с информацией о юзере-->
+                </div>
+                <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+                    <div class="card-body">
+                        <table class="table">
+                            <thead class="thead-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Username</th>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>Email</th>
+                                <th>Year Of Birth</th>
+                                <th>Role</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="user:${allUsers}" th:unless="${user.name == authUser.name}">
+                                <th scope="row" th:text="${user.getId()}">ID</th>
+                                <td th:text="${user.getUserName()}">Username</td>
+                                <td th:text="${user.getName()}">First Name</td>
+                                <td th:text="${user.getSurname()}">Last Name</td>
+                                <td th:text="${user.getEmail()}">Email</td>
+                                <td th:text="${user.getYearOfBirth()}">Year Of Birth</td>
+                                <td th:text="${#strings.replace(
+                        (#strings.replace(
+                        (#strings.replace(user.getRole(), 'ROLE_', '') + ' '),'[','')),']','')}">Role
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
                     </div>
-                    <!-- КОНЕЦ-->
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"

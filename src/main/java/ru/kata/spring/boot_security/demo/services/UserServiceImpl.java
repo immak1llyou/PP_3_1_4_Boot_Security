@@ -49,10 +49,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void saveUser(User user) {
+    public void saveUser(User user, List<String> roles) {
         if (userRepository.findByUserName(user.getUserName()).isPresent()) {
             throw new UsernameNotFoundException(String.format("Пользователь '%s' уже существует." +
                     " Сохранение невозможно.", user.getUserName()));
+        }
+        if (roles.size() == 2) {
+            user.setRole(roleService.getRoles());
+        } else if (roles.size() == 1) {
+            user.setRole(roleService.getRole(roles.get(0)));
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);

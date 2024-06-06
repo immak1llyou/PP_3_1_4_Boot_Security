@@ -18,11 +18,13 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final RoleService roleService;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, RoleService roleService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.roleService = roleService;
     }
 
     @Override
@@ -58,11 +60,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void updateUser(User updateUser, int id) {
+    public void updateUser(User updateUser, int id, List<String> roles) {
         User existingUser = userRepository.findById(updateUser.getId())
                 .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
-        existingUser.getRole().clear();
-        existingUser.setRole(updateUser.getRole());
+        if (roles.size() == 2) {
+            existingUser.setRole(roleService.getRoles());
+        } else if (roles.size() == 1) {
+            existingUser.setRole(roleService.getRole(roles.get(0)));
+        }
         if (!existingUser.getPassword().equals(updateUser.getPassword())) {
             existingUser.setPassword(passwordEncoder.encode(updateUser.getPassword()));
         }

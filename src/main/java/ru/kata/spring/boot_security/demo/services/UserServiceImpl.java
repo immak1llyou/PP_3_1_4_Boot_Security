@@ -1,12 +1,10 @@
 package ru.kata.spring.boot_security.demo.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.kata.spring.boot_security.demo.repository.RoleRepository;
 import ru.kata.spring.boot_security.demo.repository.UserRepository;
 import ru.kata.spring.boot_security.demo.models.User;
 
@@ -21,7 +19,7 @@ public class UserServiceImpl implements UserService {
     private final RoleService roleService;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, RoleService roleService) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, RoleService roleService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.roleService = roleService;
@@ -39,60 +37,36 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void deleteUserByUserName(String userName) {
-        Optional<User> findUser = userRepository.findByUserName(userName);
+    public void deleteUserById(Integer id) {
+        Optional<User> findUser = userRepository.findById(id);
         if (findUser.isPresent()) {
-            User user = findUser.get();
-            userRepository.delete(user);
+            userRepository.deleteById(id);
         }
     }
 
     @Override
     @Transactional
     public void saveUser(User user, List<String> roles) {
-        if (userRepository.findByUserName(user.getUserName()).isPresent()) {
-            throw new UsernameNotFoundException(String.format("Пользователь '%s' уже существует." +
+        if (userRepository.findById(user.getId()).isPresent()) {
+            throw new UsernameNotFoundException(String.format("Пользователь c ID= '%s' уже существует." +
                     " Сохранение невозможно.", user.getUserName()));
         }
-        if (roles.size() == 2) {
-            user.setRole(roleService.getRoles());
-        } else if (roles.size() == 1) {
-            user.setRole(roleService.getRole(roles.get(0)));
-        }
+        user.setRole(roleService.getRoles().stream().filter(role -> roles.contains(role.getRoleName())).toList());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
     }
 
     @Override
     @Transactional
-    public void updateUser(User updateUser, int id, List<String> roles) {
-        User existingUser = userRepository.findById(updateUser.getId())
-                .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
-        if (roles.size() == 2) {
-            existingUser.setRole(roleService.getRoles());
-        } else if (roles.size() == 1) {
-            existingUser.setRole(roleService.getRole(roles.get(0)));
-        }
-        if (!existingUser.getPassword().equals(updateUser.getPassword())) {
-            existingUser.setPassword(passwordEncoder.encode(updateUser.getPassword()));
-        }
-        existingUser.setYearOfBirth(updateUser.getYearOfBirth());
-        existingUser.setUserName(updateUser.getUserName());
-        existingUser.setName(updateUser.getName());
-        existingUser.setSurname(updateUser.getSurname());
-        existingUser.setEmail(updateUser.getEmail());
-        userRepository.save(existingUser);
+    public void updateUser(User updateUser, List<String> roles) {
+        updateUser.setRole(roleService.getRoles().stream().filter(role -> roles.contains(role.getRoleName())).toList());
+        updateUser.setPassword(passwordEncoder.encode(updateUser.getPassword()));
+        userRepository.save(updateUser);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<User> getAllUsers() {
         return userRepository.findAll();
-    }
-
-    @Override
-    public User getAuthUser() {
-        Optional<User> user = userRepository.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
-        return user.orElse(null);
     }
 }

@@ -8,6 +8,7 @@ import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.services.RoleService;
 import ru.kata.spring.boot_security.demo.services.UserService;
 
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -24,9 +25,9 @@ public class AdminController {
     }
 
     @GetMapping()
-    public String adminPanel(Model model) {
+    public String getAdminPanel(Model model, Principal principal) {
         model.addAttribute("allUsers", userService.getAllUsers());
-        model.addAttribute("authUser", userService.getAuthUser());
+        model.addAttribute("authUser", userService.getUserByUserName(principal.getName()));
         model.addAttribute("newUser", new User());
         model.addAttribute("roles", roleService.getRoles());
         model.addAttribute("activeTable", "usersTable");
@@ -34,15 +35,15 @@ public class AdminController {
     }
 
     @PostMapping("/update")
-    public String updateUser(@ModelAttribute("updateUser") User updateUser, @RequestParam("id") int id,
+    public String updateUser(@ModelAttribute("updateUser") User updateUser,
                              @RequestParam(value = "roleStringNameArray", required = false) List<String> roleArray) {
-        userService.updateUser(updateUser, id, roleArray);
+        userService.updateUser(updateUser, roleArray);
         return "redirect:/admin";
     }
 
     @PostMapping("/delete")
-    public String deleteUser(@RequestParam("userName") String userName) {
-        userService.deleteUserByUserName(userName);
+    public String deleteUser(@RequestParam("id") int id) {
+        userService.deleteUserById(id);
         return "redirect:/admin";
     }
 

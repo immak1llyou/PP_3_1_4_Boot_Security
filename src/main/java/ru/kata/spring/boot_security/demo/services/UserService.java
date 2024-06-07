@@ -8,13 +8,11 @@ public interface UserService {
 
     User getUserByUserName(String userName);
 
-    void deleteUserByUserName(String userName);
+    void deleteUserById(Integer id);
 
     void saveUser(User user, List<String> roles);
 
-    void updateUser(User updateUser, int id, List<String> roles);
+    void updateUser(User updateUser, List<String> roles);
 
     List<User> getAllUsers();
-
-    User getAuthUser();
 }

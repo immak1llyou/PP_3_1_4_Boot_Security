@@ -54,8 +54,7 @@
                         <button class="nav-link w-100 p-2 m-0 b-0" id="v-pills-profile-tab" data-bs-toggle="pill"
                                 data-bs-target="#v-pills-profile"
                                 type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false"
-                                th:each="user : ${allUsers}" th:text="${user.getUserName()}"
-                                th:unless="${user.name == authUser.name}">
+                                th:text="${allUsers.get(1).getUserName()}">
                         </button>
                     </div>
                 </div>
@@ -155,7 +154,7 @@
                                                                             </div>
                                                                             <div class="modal-body">
                                                                                 <form
-                                                                                        th:action="@{/admin/update(id=${user.getId()})}"
+                                                                                        th:action="@{/admin/update}"
                                                                                         th:object="${user}"
                                                                                         th:method="POST">
                                                                                     <div class="container p-0 m-0">
@@ -294,7 +293,7 @@
                                                                             </div>
                                                                             <div class="modal-body">
                                                                                 <form th:method="POST"
-                                                                                      th:action="@{/admin/delete(userName=${user.getUserName()})}"
+                                                                                      th:action="@{/admin/delete(id=${user.getId()})}"
                                                                                       th:object="${user}">
                                                                                     <div class="container">
                                                                                         <div class="row">
@@ -591,16 +590,16 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <tr th:each="user:${allUsers}" th:unless="${user.name == authUser.name}">
-                                        <th scope="row" th:text="${user.getId()}">ID</th>
-                                        <td th:text="${user.getUserName()}">Username</td>
-                                        <td th:text="${user.getName()}">First Name</td>
-                                        <td th:text="${user.getSurname()}">Last Name</td>
-                                        <td th:text="${user.getEmail()}">Email</td>
-                                        <td th:text="${user.getYearOfBirth()}">Year Of Birth</td>
+                                    <tr>
+                                        <th scope="row" th:text="${allUsers.get(1).getId()}">ID</th>
+                                        <td th:text="${allUsers.get(1).getUserName()}">Username</td>
+                                        <td th:text="${allUsers.get(1).getName()}">First Name</td>
+                                        <td th:text="${allUsers.get(1).getSurname()}">Last Name</td>
+                                        <td th:text="${allUsers.get(1).getEmail()}">Email</td>
+                                        <td th:text="${allUsers.get(1).getYearOfBirth()}">Year Of Birth</td>
                                         <td th:text="${#strings.replace(
                                         (#strings.replace(
-                                        (#strings.replace(user.getRole(), 'ROLE_', '') + ' '),'[','')),']','')}">Role
+                                        (#strings.replace(allUsers.get(1).getRole(), 'ROLE_', '') + ' '),'[','')),']','')}">Role
                                         </td>
                                     </tr>
                                     </tbody>

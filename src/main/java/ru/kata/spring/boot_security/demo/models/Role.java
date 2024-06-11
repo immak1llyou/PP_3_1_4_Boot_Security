@@ -1,5 +1,9 @@
 package ru.kata.spring.boot_security.demo.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
@@ -19,6 +23,7 @@ public class Role {
     private String roleName;
 
     @ManyToMany(mappedBy = "role", fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<User> users;
 
     public Role() {

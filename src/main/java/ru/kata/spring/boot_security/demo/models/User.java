@@ -1,5 +1,8 @@
 package ru.kata.spring.boot_security.demo.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.util.List;
@@ -12,22 +15,22 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @NotEmpty
+    @NotEmpty(message = "Поле никнейама не может быть пустым")
     @Size(min = 2, max = 100, message = "Никнейм должен быть от 2 до 100 символов длинной")
     @Column(name = "username", unique = true)
     private String userName;
 
-    @NotEmpty
+    @NotEmpty(message = "Поле имени не может быть пустым")
     @Size(min = 2, max = 100, message = "Имя должно быть от 2 до 100 символов длинной")
     @Column(name = "name")
     private String name;
 
-    @NotEmpty
+    @NotEmpty(message = "Поле фамилии не может быть пустым")
     @Size(min = 2, max = 100, message = "Фамилия должна быть от 2 до 100 символов длинной")
     @Column(name = "surname")
     private String surname;
 
-    @NotEmpty
+    @NotEmpty(message = "адрес почты не может отсутствовать")
     @Email
     @Column(name = "email", unique = true)
     private String email;

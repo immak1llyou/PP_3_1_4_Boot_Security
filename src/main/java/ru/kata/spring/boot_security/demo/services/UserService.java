@@ -8,6 +8,8 @@ public interface UserService {
 
     User getUserByUserName(String userName);
 
+    User getUserById(Integer id);
+
     void deleteUserById(Integer id);
 
     void saveUser(User user, List<String> roles);

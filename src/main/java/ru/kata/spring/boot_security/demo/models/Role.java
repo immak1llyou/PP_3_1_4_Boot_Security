@@ -3,6 +3,7 @@ package ru.kata.spring.boot_security.demo.models;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -55,6 +56,11 @@ public class Role {
 
     public void setUsers(List<User> users) {
         this.users = users;
+    }
+
+    @JsonProperty("roleName")
+    public String getRoleNameWithoutRole() {
+        return roleName.substring(5);
     }
 
     @Override

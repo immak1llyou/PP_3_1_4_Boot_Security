@@ -16,11 +16,7 @@
         <div class="row w-100">
             <div class="col-1 w-50">
                 <blockquote class="blockquote">
-                    <p class="mb-0" style="display: inline; vertical-align: middle"
-                       th:text="${authUser.getEmail()} + ' with roles: ' + ${
-                       #strings.replace(
-                       (#strings.replace(
-                       (#strings.replace(authUser.getRole(), 'ROLE_', '') + ' '),'[','')),']','')}">
+                    <p class="mb-0" style="display: inline; vertical-align: middle" id="currentUserEmailNavbar">
                     </p>
                 </blockquote>
             </div>
@@ -46,10 +42,10 @@
                  aria-orientation="vertical">
                 <div class="card vh-100 p-0 b-0 m-0">
                     <div class="card-body h-100 p-0 b-0 m-0">
-                        <button class="nav-link active w-100 p-2 m-0" id="v-pills-home-tab" data-bs-toggle="pill"
+                        <button class="nav-link active w-100 p-2 m-0" id="currentUserName" data-bs-toggle="pill"
                                 data-bs-target="#v-pills-home"
                                 type="button" role="tab" aria-controls="v-pills-home" aria-selected="true"
-                                th:text="${authUser.name}">
+                                >
                         </button>
                     </div>
                 </div>
@@ -87,20 +83,7 @@
                                                             <th>Role</th>
                                                         </tr>
                                                         </thead>
-                                                        <tbody>
-                                                        <tr>
-                                                            <th scope="row" th:text="${authUser.getId()}">ID</th>
-                                                            <td th:text="${authUser.getUserName()}">Username</td>
-                                                            <td th:text="${authUser.getName()}">First Name</td>
-                                                            <td th:text="${authUser.getSurname()}">Last Name</td>
-                                                            <td th:text="${authUser.getEmail()}">Email</td>
-                                                            <td th:text="${authUser.getYearOfBirth()}">Year Of Birth
-                                                            </td>
-                                                            <td th:text="${#strings.replace(
-                        (#strings.replace(
-                        (#strings.replace(authUser.getRole(), 'ROLE_', '') + ' '),'[','')),']','')}">Role
-                                                            </td>
-                                                        </tr>
+                                                        <tbody id="currentUserTable">
                                                         </tbody>
                                                     </table>
                                                 </div>
@@ -118,10 +101,9 @@
     </div>
 </div>
 
-
+<script src="/js/user.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
-
 </body>
 </html>

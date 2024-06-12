@@ -16,7 +16,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/rest")
+@RequestMapping("/api/admin")
 public class RESTController {
 
     private final UserService userService;
@@ -28,50 +28,32 @@ public class RESTController {
         this.roleService = roleService;
     }
 
-    @GetMapping("/User")
-    public List<User> getAllUsers() {
-        return userService.getAllUsers();
+    @GetMapping("")
+    public ResponseEntity<List<User>> getAllUsers() {
+        return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
     }
 
-    @GetMapping("/User/{id}")
-    public User getUserById(@PathVariable Integer id) {
-        return userService.getUserById(id);
+    @GetMapping("/{id}")
+    public ResponseEntity<User> getUserById(@PathVariable Integer id) {
+        return new ResponseEntity<>(userService.getUserById(id), HttpStatus.OK);
     }
 
-    @PostMapping(value = "/User")
+    @PostMapping()
     public ResponseEntity<HttpStatus> createUser(@RequestBody @Valid User user,
-                                                 @RequestParam(name = "roles", required = false) List<String> roles,
-                                                 BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            StringBuilder errorMsg = new StringBuilder();
-            List<FieldError> errors = bindingResult.getFieldErrors();
-            for (FieldError error : errors) {
-                errorMsg.append(error.getField()).append(" - ").append(error.getDefaultMessage()).append(";");
-            }
-            throw new PersonNotCreatedException(errorMsg.toString());
-        }
+                                                 @RequestParam(name = "roles", required = false) List<String> roles) {
         userService.saveUser(user, roles);
         return ResponseEntity.status(HttpStatus.CREATED).body(HttpStatus.CREATED);
     }
 
-    @DeleteMapping(value = "/User/{id}")
-    public String deleteUser(@RequestParam(name = "id") Integer id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<HttpStatus> deleteUser(@PathVariable(name = "id") Integer id) {
         userService.deleteUserById(id);
-        return "User deleted";
+        return ResponseEntity.status(HttpStatus.OK).body(HttpStatus.OK);
     }
 
-    @PutMapping(value = "/User")
+    @PutMapping()
     public ResponseEntity<HttpStatus> updateUser(@RequestBody @Valid User updateUser,
-                                                 @RequestParam(name = "roles", required = false) List<String> roles,
-                                                 BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            StringBuilder errorMsg = new StringBuilder();
-            List<FieldError> errors = bindingResult.getFieldErrors();
-            for (FieldError error : errors) {
-                errorMsg.append(error.getField()).append(" - ").append(error.getDefaultMessage()).append(";");
-            }
-            throw new PersonNotUpdatedException(errorMsg.toString());
-        }
+                                                 @RequestParam(name = "roles", required = false) List<String> roles) {
         userService.updateUser(updateUser, roles);
         return ResponseEntity.status(HttpStatus.OK).body(HttpStatus.OK);
     }
@@ -81,12 +63,5 @@ public class RESTController {
         PersonErrorResponse response =
                 new PersonErrorResponse("User with id wasn't found!", System.currentTimeMillis());
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler
-    private ResponseEntity<PersonErrorResponse> handleException(PersonNotCreatedException ex) {
-        PersonErrorResponse response =
-                new PersonErrorResponse(ex.getMessage(), System.currentTimeMillis());
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }

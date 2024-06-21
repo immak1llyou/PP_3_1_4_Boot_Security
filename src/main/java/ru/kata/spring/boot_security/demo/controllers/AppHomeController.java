@@ -9,11 +9,11 @@ public class AppHomeController {
 
     @GetMapping("/user")
     public String showIndexPageUser() {
-        return "user/user";
+        return "user/user_panel";
     }
 
     @GetMapping("/admin")
     public String showIndexPageAdmin() {
-        return "admin/adminPanel";
+        return "admin/admin_panel";
     }
 }

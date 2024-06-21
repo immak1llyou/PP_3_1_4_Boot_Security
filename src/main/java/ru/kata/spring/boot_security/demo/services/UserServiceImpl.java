@@ -5,12 +5,15 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.repository.UserRepository;
 import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.util.PersonNotFoundException;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -53,20 +56,25 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void saveUser(User user, List<String> roles) {
+    public void saveUser(User user) {
         if (userRepository.findById(user.getId()).isPresent()) {
             throw new UsernameNotFoundException(String.format("Пользователь c ID= '%s' уже существует." +
                     " Сохранение невозможно.", user.getUserName()));
         }
-        user.setRole(roleService.getRoles().stream().filter(role -> roles.contains(role.getRoleName())).toList());
+        user.setRole(roleService.getRoles().stream()
+                .filter(role -> user.getRole().stream().anyMatch(r -> r.getRoleName().equals(role.getRoleName())))
+                .collect(Collectors.toList()));
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
     }
 
     @Override
     @Transactional
-    public void updateUser(User updateUser, List<String> roles) {
-        updateUser.setRole(roleService.getRoles().stream().filter(role -> roles.contains(role.getRoleName())).toList());
+    public void updateUser(User updateUser, Integer id) {
+        updateUser.setId(id);
+        updateUser.setRole(roleService.getRoles().stream()
+                .filter(role -> updateUser.getRole().stream().anyMatch(r -> r.getRoleName().equals(role.getRoleName())))
+                .collect(Collectors.toList()));
         updateUser.setPassword(passwordEncoder.encode(updateUser.getPassword()));
         userRepository.save(updateUser);
     }

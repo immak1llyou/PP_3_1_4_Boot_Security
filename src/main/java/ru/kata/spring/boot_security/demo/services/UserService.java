@@ -12,9 +12,9 @@ public interface UserService {
 
     void deleteUserById(Integer id);
 
-    void saveUser(User user, List<String> roles);
+    void saveUser(User user);
 
-    void updateUser(User updateUser, List<String> roles);
+    void updateUser(User updateUser, Integer id);
 
     List<User> getAllUsers();
 }

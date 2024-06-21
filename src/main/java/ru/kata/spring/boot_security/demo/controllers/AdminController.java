@@ -11,6 +11,7 @@ import ru.kata.spring.boot_security.demo.util.*;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -18,19 +19,14 @@ import java.util.List;
 public class AdminController {
 
     private final UserService userService;
-    private final RoleService roleService;
 
     @Autowired
-    public AdminController(UserService userService, RoleService roleService) {
+    public AdminController(UserService userService) {
         this.userService = userService;
-        this.roleService = roleService;
     }
 
     @GetMapping()
     public ResponseEntity<User> getAdminInfo(Principal principal) {
-        System.out.println("--------------------");
-        System.out.println(principal.getName());
-        System.out.println("--------------------");
         return new ResponseEntity<>(userService.getUserByUserName(principal.getName()), HttpStatus.OK);
     }
 
@@ -45,9 +41,8 @@ public class AdminController {
     }
 
     @PostMapping()
-    public ResponseEntity<HttpStatus> createUser(@RequestBody @Valid User user,
-                                                 @RequestParam(name = "roles", required = false) List<String> roles) {
-        userService.saveUser(user, roles);
+    public ResponseEntity<HttpStatus> createUser(@RequestBody @Valid  User user) {
+        userService.saveUser(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(HttpStatus.CREATED);
     }
 
@@ -57,10 +52,9 @@ public class AdminController {
         return ResponseEntity.status(HttpStatus.OK).body(HttpStatus.OK);
     }
 
-    @PutMapping()
-    public ResponseEntity<HttpStatus> updateUser(@RequestBody @Valid User updateUser,
-                                                 @RequestParam(name = "roles", required = false) List<String> roles) {
-        userService.updateUser(updateUser, roles);
+    @PostMapping("/{id}")
+    public ResponseEntity<HttpStatus> updateUser(@RequestBody @Valid User updateUser, @PathVariable(name = "id") Integer id) {
+        userService.updateUser(updateUser, id);
         return ResponseEntity.status(HttpStatus.OK).body(HttpStatus.OK);
     }
 

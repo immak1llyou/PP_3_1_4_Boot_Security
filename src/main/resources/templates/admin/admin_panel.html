@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>Users</title>
+</head>
+<body>
+<nav class="navbar sticky-top bg-dark text-white">
+        <span class="navbar-brand mb-0">
+            <span style="font-weight: bold" id="emailCurrentUser"></span> with roles:
+            <span id="roleCurrentUser"></span>
+        </span>
+    <a href="/logout" class="btn text-white-50" role="button" aria-pressed="true">Logout</a>
+</nav>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-2 bg-white pt-3 min-vh-100 px-0">
+            <div class="container-fluid px-0">
+                <ul class="nav flex-column nav-pills ">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#">Admin</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/user">User</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="col pt-4 h-100 min-vh-100 bg-light">
+            <div class="container-fluid">
+                <h1 class="display-5 px-3 pb-3">Admin panel</h1>
+                <div class="container-fluid">
+                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab"
+                               aria-controls="home" aria-selected="true">Users table</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#newUser" role="tab"
+                               aria-controls="profile" aria-selected="false">New User</a>
+                        </li>
+                    </ul>
+                    <div class="tab-container bg-white border rounded ">
+                        <div class="tab-content bg-white " id="myTabContent">
+                            <div class="tab-pane fade show active bg-white" id="home" role="tabpanel"
+                                 aria-labelledby="home-tab">
+                                <div class="tab-container-fluid bg-light border-bottom pt-2 pb-1 px-0">
+                                    <h4 class="text-start px-4">All users</h4>
+                                </div>
+                                <div class="tab-content bg-white pt-4 px-4 pb-4">
+                                    <table class="table table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th scope="col">ID</th>
+                                            <th scope="col">Username</th>
+                                            <th scope="col">Name</th>
+                                            <th scope="col">Surname</th>
+                                            <th scope="col">Email</th>
+                                            <th scope="col">Year Of Birth</th>
+                                            <th scope="col">Role</th>
+                                            <th scope="col">Edit</th>
+                                            <th scope="col">Delete</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="AllUsers">
+                                        </tbody>
+                                    </table>
+                                    <!--  Edit  -->
+                                    <div class="modal fade" id="edit" tabindex="-1" role="dialog"
+                                         aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLabel">Edit user</h5>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                            aria-label="Close">
+                                                    </button>
+                                                </div>
+                                                <form id="formEdit">
+                                                    <div class="modal-body text-center pt-3">
+                                                        <div class="container-fluid align-middle w-50">
+                                                            <label for="Edit_id"
+                                                                   class="form-label text-center h6"><b>ID</b></label>
+                                                            <input type="text" name="id" class="form-control"
+                                                                   id="Edit_id" placeholder="ID"
+                                                                   aria-describedby="basic-addon1" disabled>
+
+                                                            <label for="Edit_username"
+                                                                   class="form-label text-center pt-3 h6"><b>Username</b></label>
+                                                            <input type="text" name="username" class="form-control"
+                                                                   id="Edit_username" placeholder="Username"
+                                                                   aria-describedby="basic-addon1" required>
+
+                                                            <label for="Edit_name"
+                                                                   class="form-label text-center pt-3 h6"><b>Name</b></label>
+                                                            <input type="text" name="name" class="form-control"
+                                                                   id="Edit_name" placeholder="name"
+                                                                   aria-describedby="basic-addon1" required>
+
+                                                            <label for="Edit_surname"
+                                                                   class="form-label text-center pt-3 h6"><b>Surname</b></label>
+                                                            <input type="text" name="surname" class="form-control"
+                                                                   id="Edit_surname" placeholder="surname"
+                                                                   aria-describedby="basic-addon1" required>
+
+                                                            <label for="Edit_email"
+                                                                   class="form-label text-center pt-3 h6"><b>Email</b></label>
+                                                            <input type="email" name="email" class="form-control"
+                                                                   id="Edit_email" placeholder="Email"
+                                                                   aria-describedby="basic-addon1" required>
+
+                                                            <label for="Edit_YearOfBirth"
+                                                                   class="form-label text-center pt-3 h6"><b>Year Of Birth</b></label>
+                                                            <input type="number" name="yearOfBirth" class="form-control"
+                                                                   id="Edit_YearOfBirth" placeholder="year of birth"
+                                                                   aria-describedby="basic-addon1" required>
+
+                                                            <label for="Edit_password"
+                                                                   class="form-label text-center pt-3 h6"><b>Password</b></label>
+                                                            <input type="password" name="password" class="form-control"
+                                                                   id="Edit_password" placeholder="Password"
+                                                                   aria-describedby="basic-addon1" required>
+
+                                                            <label for="Edit_rolesId"
+                                                                   class="form-label text-center pt-3 h6"><b>Role</b></label>
+                                                            <select size="2" name="roles" multiple
+                                                                    class="form-control"
+                                                                    id="Edit_rolesId" required>
+
+                                                                <option value="1">USER</option>
+                                                                <option value="2">ADMIN</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" id="closeEdit" class="btn btn-secondary"
+                                                                data-dismiss="modal">Close
+                                                        </button>
+                                                        <button type="submit" class="btn btn-primary">Edit</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Delete -->
+                                    <div class="modal fade" id="delete" tabindex="-1" role="dialog"
+                                         aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Delete</h5>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                            aria-label="Close">
+                                                    </button>
+                                                </div>
+                                                <form id="formDelete">
+                                                    <div class="modal-body text-center pt-3">
+                                                        <div class="container-fluid align-middle w-50">
+                                                            <label for="Edit_id1" class="form-label text-center h6"><b>ID</b></label>
+                                                            <input type="number" name="id" class="form-control"
+                                                                   id="Edit_id1" placeholder="ID"
+                                                                   aria-describedby="basic-addon1" disabled>
+                                                            <label for="Edit_username1"
+                                                                   class="form-label text-center pt-3 h6"><b>Username</b></label>
+                                                            <input type="text" name="username" class="form-control"
+                                                                   id="Edit_username1" placeholder="Username"
+                                                                   aria-describedby="basic-addon1" disabled>
+
+                                                            <label for="Edit_name1"
+                                                                   class="form-label text-center pt-3 h6"><b>Name</b></label>
+                                                            <input type="text" name="name" class="form-control"
+                                                                   id="Edit_name1" placeholder="Name"
+                                                                   aria-describedby="basic-addon1" disabled>
+
+                                                            <label for="Edit_surname1"
+                                                                   class="form-label text-center pt-3 h6"><b>Surname</b></label>
+                                                            <input type="text" name="surname" class="form-control"
+                                                                   id="Edit_surname1" placeholder="Surname"
+                                                                   aria-describedby="basic-addon1" disabled>
+
+                                                            <label for="Edit_YearOfBirth1"
+                                                                   class="form-label text-center pt-3 h6"><b>Year of birth</b></label>
+                                                            <input type="number" name="yearOfBirth" class="form-control"
+                                                                   id="Edit_YearOfBirth1" placeholder="Year Of Birth"
+                                                                   aria-describedby="basic-addon1" disabled>
+
+                                                            <label for="Edit_email1"
+                                                                   class="form-label text-center pt-3 h6"><b>Email
+                                                                name</b></label>
+                                                            <input type="email" name="email" class="form-control"
+                                                                   id="Edit_email1" placeholder="Email"
+                                                                   aria-describedby="basic-addon1" disabled>
+                                                            <label for="Edit_rolesId1"
+                                                                   class="form-label text-center pt-3 h6"><b>Role</b></label>
+                                                            <select size="2" multiple
+                                                                    class="form-control"
+                                                                    id="Edit_rolesId1" name="roles" required disabled>
+                                                                <option value="1">USER</option>
+                                                                <option value="2">ADMIN</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" id="closeDelete" class="btn btn-secondary"
+                                                                data-dismiss="modal">Close
+                                                        </button>
+                                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--                            Create new user-->
+                            <div class="tab-pane fade" id="newUser" role="tabpanel" aria-labelledby="profile-tab">
+                                <div class="tab-container bg-white border-bottom rounded ">
+                                    <div class="tab-container-fluid bg-light border-bottom pt-2 pb-1 px-0">
+                                        <h4 class="text-start px-4">Add new user</h4>
+                                    </div>
+                                    <div class="m-4">
+                                        <form id="create" class="align-items-center pt-2">
+                                            <div class="d-flex flex-column align-items-center w-25 mx-auto">
+                                                <label for="username" class="form-label text-center h6"><b>Username</b></label>
+                                                <input type="text" name="username" class="form-control" id="username"
+                                                       placeholder="Username" aria-describedby="basic-addon1"
+                                                       required>
+
+                                                <label for="name" class="form-label text-center h6"><b>Name</b></label>
+                                                <input type="text" name="name" class="form-control" id="name"
+                                                       placeholder="Name" aria-describedby="basic-addon1"
+                                                       required>
+
+                                                <label for="surname" class="form-label text-center h6"><b>Surname</b></label>
+                                                <input type="text" name="userName" class="form-control" id="surname"
+                                                       placeholder="Username" aria-describedby="basic-addon1"
+                                                       required>
+
+                                                <label for="yearOfBirth" class="form-label text-center h6"><b>Year of Birth</b></label>
+                                                <input type="number" name="yearOfBirth" class="form-control" id="yearOfBirth"
+                                                       placeholder="Year Of Birth" aria-describedby="basic-addon1"
+                                                       required>
+
+                                                <label for="emailC"
+                                                       class="form-label text-center pt-2 h6"><b>Email</b></label>
+                                                <input type="email" name="email" class="form-control" id="emailC"
+                                                       placeholder="Email" aria-describedby="basic-addon1" required>
+
+                                                <label for="password"
+                                                       class="form-label text-center pt-2 h6"><b>Password</b></label>
+                                                <input type="password" name="password" class="form-control"
+                                                       id="password" placeholder="Password"
+                                                       aria-describedby="basic-addon1" required>
+
+                                                <label for="rolesId" class="form-label text-center pt-2 h6"><b>Role</b></label>
+                                                <select size="2" multiple
+                                                        class="form-control"
+                                                        id="rolesId" name="role" required>
+                                                    <option value="1">USER</option>
+                                                    <option value="2">ADMIN</option>
+                                                </select>
+
+
+                                                <div class="mx-auto pt-4">
+                                                    <button type="submit" class="btn btn-success btn-lg w-100">Add new
+                                                        user
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+<script src="/js/currentUser.js"></script>
+<script src="/js/tableUsers.js"></script>
+<script src="/js/newUser.js"></script>
+<script src="/js/deleteUser.js"></script>
+<script src="/js/modal.js"></script>
+<script src="/js/editUser.js"></script>
+
+</body>
+</html>
